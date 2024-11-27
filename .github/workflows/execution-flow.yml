@@ -26,16 +26,17 @@ jobs:
         uses: actions/checkout@v4
       - name: Cache dependencies
         id: cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
       - name: Test code
+        id: run-tests
         run: npm run test
       - name: Upload test report
-        if:
+        if: steps.run-tests.outcome == 'failure' 
         uses: actions/upload-artifact@v4
         with:
           name: test-report
